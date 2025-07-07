@@ -1,0 +1,7 @@
+train: train
+val: valid
+test: test
+path: *ASOLUTE_PATH_TO dataset_pigs*
+# Classes
+nc: 2
+names: ['pig', 'human']
