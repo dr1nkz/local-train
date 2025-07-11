@@ -46,7 +46,8 @@ dataset_params = {
     'val_labels_dir': '/home/pc/Downloads/local-train/dataset_pigs/valid/labels',
     # 'test_images_dir': '',
     # 'test_labels_dir': '',
-    'classes': ['pig, human']
+    # 'classes': ['pig, human'],
+    'classes': ['ladder', 'pig', 'human']
 }
 
 train_data = coco_detection_yolo_format_train(
