@@ -44,8 +44,8 @@ dataset_params = {
     'train_labels_dir': '/home/pc/Downloads/local-train/dataset_pigs/train/labels',
     'val_images_dir': '/home/pc/Downloads/local-train/dataset_pigs/valid/images',
     'val_labels_dir': '/home/pc/Downloads/local-train/dataset_pigs/valid/labels',
-    # 'test_images_dir': '',
-    # 'test_labels_dir': '',
+    'test_images_dir': '',
+    'test_labels_dir': '',
     # 'classes': ['pig, human'],
     'classes': ['ladder', 'pig', 'human']
 }
@@ -68,6 +68,19 @@ val_data = coco_detection_yolo_format_val(
         'data_dir': dataset_params['data_dir'],
         'images_dir': dataset_params['val_images_dir'],
         'labels_dir': dataset_params['val_labels_dir'],
+        'classes': dataset_params['classes']
+    },
+    dataloader_params={
+        'batch_size': 3,
+        'num_workers': 8
+    }
+)
+
+test_data = coco_detection_yolo_format_val(
+    dataset_params={
+        'data_dir': dataset_params['data_dir'],
+        'images_dir': dataset_params['test_images_dir'],
+        'labels_dir': dataset_params['test_labels_dir'],
         'classes': dataset_params['classes']
     },
     dataloader_params={
@@ -126,11 +139,17 @@ train_params = {
     "metric_to_watch": 'mAP@0.50:0.95'
 }
 
-model = models.get('yolo_nas_m', num_classes=2)
+model = models.get('yolo_nas_m', num_classes=len(dataset_params['classes']))
 trainer = Trainer(experiment_name='test', ckpt_root_dir='checkpoints')
 trainer.train(
     model=model,
     training_params=train_params,
     train_loader=train_data,
     valid_loader=val_data
+)
+
+trainer.test(
+    model=model,
+    test_loader=test_data,
+    test_metrics_list=train_params["valid_metrics_list"]
 )
