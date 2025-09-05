@@ -21,7 +21,14 @@ from super_gradients.training.dataloaders.dataloaders import (
 from super_gradients.training import dataloaders
 from super_gradients.training import Trainer
 from super_gradients.training import models
+from super_gradients.training.transforms.transforms import (
+    DetectionMosaic,
+    DetectionRandomHorizontalFlip,
+    DetectionHSV,
+    DetectionRandomAffine
+)
 import torch
+
 # Save the original torch.load function
 _original_torch_load = torch.load
 
@@ -58,8 +65,14 @@ train_data = coco_detection_yolo_format_train(
         'classes': dataset_params['classes']
     },
     dataloader_params={
-        'batch_size': 3,
-        'num_workers': 8
+        'batch_size': 16,
+        'num_workers': 8,
+        'transforms': [
+            DetectionMosaic(prob=1.0),
+            DetectionRandomHorizontalFlip(prob=0.5),
+            DetectionHSV(prob=0.5),
+            DetectionRandomAffine(prob=0.5)
+        ]
     }
 )
 
@@ -71,7 +84,7 @@ val_data = coco_detection_yolo_format_val(
         'classes': dataset_params['classes']
     },
     dataloader_params={
-        'batch_size': 3,
+        'batch_size': 16,
         'num_workers': 8
     }
 )
@@ -84,7 +97,7 @@ test_data = coco_detection_yolo_format_val(
         'classes': dataset_params['classes']
     },
     dataloader_params={
-        'batch_size': 3,
+        'batch_size': 16,
         'num_workers': 8
     }
 )
@@ -95,15 +108,15 @@ train_params = {
     "warmup_mode": "linear_epoch_step",
     "warmup_initial_lr": 1e-6,
     "lr_warmup_epochs": 3,
-    "initial_lr": 5e-4,
+    "initial_lr": 3e-4,
     "lr_mode": "cosine",
     "cosine_final_lr_ratio": 0.1,
-    "optimizer": "Adam",
-    "optimizer_params": {"weight_decay": 0.0001},
+    "optimizer": "SGD",
+    "optimizer_params": {"momentum": 0.937, "weight_decay": 5e-4},
     "zero_weight_decay_on_bias_and_bn": True,
     "ema": True,
-    "ema_params": {"decay": 0.9, "decay_type": "threshold"},
-    "max_epochs": 50,
+    "ema_params": {"decay": 0.9998, "decay_type": "exp"},
+    "max_epochs": 150,
     "mixed_precision": True,
     "loss": PPYoloELoss(
         use_static_assigner=False,
