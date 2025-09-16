@@ -1,0 +1,14 @@
+https://habr.com/ru/articles/737746/
+https://github.com/Deci-AI/super-gradients/blob/master/src/super_gradients/recipes/training_hyperparams/coco2017_yolo_nas_train_params.yaml
+https://github.com/Deci-AI/super-gradients/blob/master/src/super_gradients/recipes/training_hyperparams/default_train_params.yaml
+https://blog.roboflow.com/object-counting/
+https://blog.roboflow.com/video-object-counting/
+
+
+
+https://github.com/dr1nkz/pigs_counter/tree/dev/new_alghoritm
+описание к алгоритму
+Мертвая зона BAND_PX: когда свинья буквально «на линии», сторона = 0, мы вообще не считаем переход — ждём, пока уйдёт заметно на одну сторону.
+Антидребезг MIN_CONSEC_FRAMES=2: сторона должна удержаться 2 кадра, прежде чем мы признаем её «стабильной».
+Пересечение отрезков: засчитываем только когда отрезок последнего шага трека пересёк сам отрезок линии (а не бесконечную прямую). Это убирает ложные срабатывания возле концов.
+Cooldown: краткая «пауза» после события — если объект продолжает дёргаться на линии, повторной регистрации не будет.
