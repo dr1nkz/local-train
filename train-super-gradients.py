@@ -23,10 +23,10 @@ from super_gradients.training import Trainer
 from super_gradients.training import models
 from super_gradients.training.transforms.transforms import (
     DetectionMosaic,
-    DetectionRandomHorizontalFlip,
     DetectionHSV,
     DetectionRandomAffine
 )
+import albumentations as A
 import torch
 
 # Save the original torch.load function
@@ -51,28 +51,29 @@ dataset_params = {
     'train_labels_dir': '/home/pc/Downloads/local-train/dataset_pigs/train/labels',
     'val_images_dir': '/home/pc/Downloads/local-train/dataset_pigs/valid/images',
     'val_labels_dir': '/home/pc/Downloads/local-train/dataset_pigs/valid/labels',
-    'test_images_dir': '',
-    'test_labels_dir': '',
-    # 'classes': ['pig, human'],
-    'classes': ['ladder', 'pig', 'human']
+    'test_images_dir': '/home/pc/Downloads/local-train/dataset_pigs/valid/images',
+    'test_labels_dir': '/home/pc/Downloads/local-train/dataset_pigs/valid/labels',
+    'classes': ['pig', 'human']  # изменено на 2 класса
 }
+
+# Трансформации для обучения
+train_transforms = [
+    DetectionMosaic(prob=1.0, input_dim=(640, 640)),
+    DetectionHSV(prob=0.5),
+    DetectionRandomAffine(degrees=10, translate=0.1, shear=2)
+]
 
 train_data = coco_detection_yolo_format_train(
     dataset_params={
         'data_dir': dataset_params['data_dir'],
         'images_dir': dataset_params['train_images_dir'],
         'labels_dir': dataset_params['train_labels_dir'],
-        'classes': dataset_params['classes']
+        'classes': dataset_params['classes'],
+        'transforms': train_transforms
     },
     dataloader_params={
         'batch_size': 16,
-        'num_workers': 8,
-        'transforms': [
-            DetectionMosaic(prob=1.0),
-            DetectionRandomHorizontalFlip(prob=0.5),
-            DetectionHSV(prob=0.5),
-            DetectionRandomAffine(prob=0.5)
-        ]
+        'num_workers': 8
     }
 )
 
@@ -82,6 +83,7 @@ val_data = coco_detection_yolo_format_val(
         'images_dir': dataset_params['val_images_dir'],
         'labels_dir': dataset_params['val_labels_dir'],
         'classes': dataset_params['classes']
+        # обычно валидацию без агрессивных аугментаций
     },
     dataloader_params={
         'batch_size': 16,
@@ -115,7 +117,7 @@ train_params = {
     "optimizer_params": {"momentum": 0.937, "weight_decay": 5e-4},
     "zero_weight_decay_on_bias_and_bn": True,
     "ema": True,
-    "ema_params": {"decay": 0.9998, "decay_type": "exp"},
+    "ema_params": {"beta": 0.9998, "decay_type": "exp"},
     "max_epochs": 150,
     "mixed_precision": True,
     "loss": PPYoloELoss(
