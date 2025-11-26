@@ -12,3 +12,9 @@ https://github.com/dr1nkz/pigs_counter/tree/dev/new_alghoritm
 Антидребезг MIN_CONSEC_FRAMES=2: сторона должна удержаться 2 кадра, прежде чем мы признаем её «стабильной».
 Пересечение отрезков: засчитываем только когда отрезок последнего шага трека пересёк сам отрезок линии (а не бесконечную прямую). Это убирает ложные срабатывания возле концов.
 Cooldown: краткая «пауза» после события — если объект продолжает дёргаться на линии, повторной регистрации не будет.
+
+
+
+https://github.com/ultralytics/yolov5/issues/5851
+https://docs.ultralytics.com/ru/usage/cfg/
+https://docs.ultralytics.com/reference/data/augment/
