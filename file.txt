@@ -18,3 +18,13 @@ Cooldown: краткая «пауза» после события — если �
 https://github.com/ultralytics/yolov5/issues/5851
 https://docs.ultralytics.com/ru/usage/cfg/
 https://docs.ultralytics.com/reference/data/augment/
+
+
+
+rfdetr install
+pip install torch==2.4.1 torchvision==0.19.1 torchaudio==2.4.1
+pip install opencv-python pillow tqdm scipy pycocotools matplotlib
+pip install rfdetr
+pip install onnx onnxsim onnx_graphsurgeon
+pip uninstall onnxruntime
+pip install onnxruntime-gpu
