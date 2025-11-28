@@ -1,4 +1,5 @@
 .venv
 *.mp4
-dataset_pigs
+dataset_pigs*
 checkpoints
+output
